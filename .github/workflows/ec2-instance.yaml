@@ -66,4 +66,6 @@ jobs:
       - name: Terminate EC2 instance
         if: ${{ github.event.inputs.action == 'terminate' }}
         run: |
+          aws ec2 terminate-instances --instance-ids ${{ github.event.inputs.instance_id }}
+          aws ec2 wait instance-terminated --instance-ids ${{ github.event.inputs.instance_id }}
           echo "Instance ${{ github.event.inputs.instance_id }} terminated."
