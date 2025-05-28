@@ -2,7 +2,7 @@
 name: Launch EC2 Instance & s3 bucket creation
 
 on:
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   launch-ec2:
@@ -23,5 +23,4 @@ jobs:
             --count 1 \
             --instance-type t2.micro \
             --key-name github-action-key-pair \  # Replace with your key pair name
-            --security-groups default \
-#             --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=GitHubEC2}]'
+            --security-groups default
