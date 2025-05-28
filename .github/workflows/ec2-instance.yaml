@@ -1,5 +1,5 @@
 
-name: Launch EC2 Instance & s3 bucket creation
+name: Launch EC2 Instance & S3 Bucket Creation
 
 on:
   workflow_dispatch:
@@ -12,15 +12,15 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ var.AWS_REGION }}  # Change to your preferred region
+          aws-region: ${{ secrets.AWS_REGION }}  # Use secrets or hardcode region
 
-      - name: Launch EC2 instance
+      - name: Create Ec2 Instance
         run: |
           aws ec2 run-instances \
-            --image-id ami-084568db4383264d4 \  # Replace with a valid AMI ID
+            --image-id ami-084568db4383264d4 \
             --count 1 \
             --instance-type t2.micro \
-            --key-name github-action-key-pair \  # Replace with your key pair name
+            --key-name github-action-key-pair \
             --security-groups default
