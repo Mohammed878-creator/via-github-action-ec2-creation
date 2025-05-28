@@ -1,8 +1,16 @@
-name: Create and Auto-Terminate EC2 Instance (Manual Input)
+name: Creation and Termination EC2 instance
 
 on:
   workflow_dispatch:
     inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'launch'
+        type: choice
+        options:
+          - launch
+          - terminate
       ami_id:
         description: 'AMI ID'
         required: true
@@ -19,6 +27,9 @@ on:
         description: 'Security Group Name'
         required: true
         default: 'default'
+      instance_id:
+        description: 'Instance ID to terminate'
+        required: true
 
 jobs:
   ec2-lifecycle:
@@ -32,11 +43,12 @@ jobs:
           aws-region: us-east-1
 
       - name: Launch EC2 instance
+        if: ${{ github.event.inputs.action == 'launch' }}
         id: launch
         run: |
+          echo "Launching EC2 instance..."
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id ${{ github.event.inputs.ami_id }} \
-            --count 1 \
             --instance-type ${{ github.event.inputs.instance_type }} \
             --key-name ${{ github.event.inputs.key_name }} \
             --security-groups ${{ github.event.inputs.security_group }} \
@@ -46,17 +58,12 @@ jobs:
           echo "Launched instance ID: $INSTANCE_ID"
 
       - name: Wait for instance to be running
+        if: ${{ github.event.inputs.action == 'launch' }}
         run: |
           aws ec2 wait instance-running --instance-ids ${{ env.INSTANCE_ID }}
           echo "Instance ${{ env.INSTANCE_ID }} is now running."
 
-      - name: Simulate usage (optional)
-        run: |
-          echo "Simulating instance usage..."
-          sleep 60
-
       - name: Terminate EC2 instance
+        if: ${{ github.event.inputs.action == 'terminate' }}
         run: |
-          aws ec2 terminate-instances --instance-ids ${{ env.INSTANCE_ID }}
-          aws ec2 wait instance-terminated --instance-ids ${{ env.INSTANCE_ID }}
-          echo "Instance ${{ env.INSTANCE_ID }} terminated."
+          echo "Instance ${{ github.event.inputs.instance_id }} terminated."
