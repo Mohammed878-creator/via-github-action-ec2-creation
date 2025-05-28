@@ -29,7 +29,7 @@ on:
         default: 'default'
       instance_id:
         description: 'Instance ID to terminate'
-        required: true
+        required: false
 
 jobs:
   ec2-lifecycle:
