@@ -20,7 +20,5 @@ jobs:
         run: |
           aws ec2 run-instances \
             --image-id ami-084568db4383264d4 \
-            --count 1 \
             --instance-type t2.micro \
-            --key-name github-action-key-pair \
-            --security-groups default
+            --key-name github-action-key-pair
